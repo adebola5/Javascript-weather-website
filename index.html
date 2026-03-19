@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Weather app</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!--This is for the card that will hold our application, we only need a section of the page and the rest will be background-->
+    <div class="card">
+      <!--This is the class that holds the search box the user will type into to search for the weather-->
+      <div class="search">
+        <!--This is for the input box that the user will type into-->
+        <input type="text" placeholder="enter city name" spellcheck="false" />
+
+        <!--Then add a search icon to show that its to search, this search icon when clicked will search for the weather-->
+        <button><img src="images/search.png" /></button
+        ><!--This image is the placeholder for the button, when the image is clicked something must happen in the program-->
+      </div>
+      <!--close the search box-->
+
+      <!--This is the error message that must be displayed when the city is not found-->
+      <div class="error">
+        <p>Invalid city name</p>
+        <!--When the city is not found it must display this error message-->
+      </div>
+
+      <!--This is the weather class , it holds all the html aspects of the weather that is to be diplayed-->
+      <div class="weather">
+
+        <!-- firstly display the main image that represents the main weather for the day-->
+        <img src="images/rain.png" class="weather-icon" />
+
+        <!--These html elements hold the weather and the city-->
+        <h1 class="temp">22°C</h1>
+        <h2 class="city">New York</h2>
+
+        <!--within the same weather container we create 2 separate containers, the first to represent humidity, the second to represent wind-->
+        <div class="details">
+          <!--This is the first column, representing humidity, it has a picture of humidity and the humidity percentage for the day-->
+          <div class="col">
+            <img src="images/humidity.png" />
+            <div>
+              <p class="humidity">50%</p>
+              <p>Humidity</p>
+            </div>
+          </div>
+
+          <!--This is the second column, representing wind, it has a picture of wind and the wind km per hour for the day-->
+
+          <div class="col">
+            <img src="images/wind.png" />
+            <div>
+              <p class="wind">15 km/h</p>
+              <p>Wind Speed</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--This is the javascript section, that holds the functionality-->
+    <script>
+
+      //this is the apikey and apiUrl that will get us the weather when the user searches
+      const apikey = "fe8d916d574bfd743999f3ef2265244b";
+      const apiUrl ="https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+      //this is to monitor the user interactions with these html elements
+      const searchBox = document.querySelector(".search input");//this will get the usere's input
+      const searchBtn = document.querySelector(".search button");//the search button that is be clicked
+      const weatherIcon = document.querySelector(".weather-icon");//this is the main image
+
+      //create a function that will get the weather
+      async function checkWeather(city) {// it requires a parameter called city which when called will be the city inputed by the user
+       
+        //this method creates a new apiurl and fetch the results from it
+        const response = await fetch(apiUrl + city + `&appid=${apikey}`);
+
+        //this is for when the user enters an invalid city name the 404 means not found like in netbeans remember
+        if (response.status == 404) {
+
+          //if the inputed city is not found diplay the error message and do not display the weather message
+          document.querySelector(".error").style.display = "block";
+          document.querySelector(".weather").style.display = "none";
+        } else {
+
+          //if the inputed city is found get the weather and display as follows
+          var data = await response.json();
+
+          //this is to take the weather data and to log it into the console
+          //console.log(data);
+
+          //this is to set the html elements displaying the weather to the weather that has been generated
+          document.querySelector(".city").innerHTML = data.name;
+          document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";// round off the temperature
+          document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+          document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+
+          //here we are changing the images based on the current weather
+          if (data.weather[0].main == "Clouds") {
+            weatherIcon.src = "images/clouds.png";
+          } else if (data.weather[0].main == "Clear") {
+            weatherIcon.src = "images/clear.png";
+          } else if (data.weather[0].main == "Rain") {
+            weatherIcon.src = "images/rain.png";
+          } else if (data.weather[0].main == "Drizzle") {
+            weatherIcon.src = "images/drizzle.png";
+          } else if (data.weather[0].main == "Mist") {
+            weatherIcon.src = "images/mist.png";
+          }
+
+          //then display the weather and hide the error message
+          document.querySelector(".weather").style.display = "block";
+          document.querySelector(".error").style.display = "none";
+        }
+      }
+
+      //when the search button is clicked it must call the function to get the weather. as parameter use the user input 
+      searchBtn.addEventListener("click", () => {
+        checkWeather(searchBox.value);
+      });
+    </script>
+  </body>
+</html>
