@@ -20,3 +20,6 @@ I used the tutorial as a learning resource and then implemented the project myse
 ## ▶️ How to Run
 1. Clone or download the repository
 2. Open `index.html` in your browser
+
+## 🌐 Live Demo
+See the live Weather App here: https://adebola5.github.io/Javascript-weather-website/
